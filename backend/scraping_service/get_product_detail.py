@@ -1,45 +1,108 @@
+import json
+import urllib.parse
+from time import sleep
+
 import requests
 
-url = """
-https://cfapi.voikukka.fi/graphql?operationName=RemoteProductInfo&variables=%7B%22includeAgeLimitedByAlcohol%22%3Atrue%2C%22includeGlobalFallback%22%3Atrue%2C%22includeAvailabilities%22%3Afalse%2C%22ean%22%3A%222005603200008%22%2C%22storeId%22%3A%22%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22249d942f8ff26b94a7f26aa1a419b2b4a8f4221655ec397cf7fb35d2834da065%22%7D%7D
-"""
 
-payload = {}
-headers = {
-    'accept': '*/*',
-    'accept-language': 'en,en-US;q=0.9,zh-CN;q=0.8,zh;q=0.7',
-    'content-type': 'application/json',
-    'dnt': '1',
-    'origin': 'https://www.s-kaupat.fi',
-    'priority': 'u=1, i',
-    'sec-ch-ua': '"Chromium";v="124", "Microsoft Edge";v="124", "Not-A.Brand";v="99"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"macOS"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'cross-site',
-    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0',
-    'x-client-name': 'skaupat-web',
-    'x-client-version': 'production-c786401e5c4d2fe0b4318ffb25ab622e4cd4d0e4'
-}
+def fetch_data(limit_value, from_value):
+    # Define the base URL and query parameters
+    base_url = 'https://cfapi.voikukka.fi/graphql'
 
-response = requests.request("GET", url, headers=headers, data=payload)
-data = response.json()
+    variables = {
+        "includeAvailabilities": False,
+        "availabilityDate": "2024-05-20",
+        "facets": [{
+            "key": "brandName",
+            "order": "asc"
+        }, {
+            "key": "labels"
+        }],
+        "includeAgeLimitedByAlcohol": True,
+        "limit": limit_value,
+        "queryString": "",
+        "searchProvider": "loop54",
+        "slug": "",
+        "sortForAvailabilityLabelDate": "2024-05-20",
+        "storeId": "513971200",
+        "useRandomId": True,
+        "from": from_value,
+    }
 
-# Extract the required fields
-product = data['data']['product']
-name = product['name']
-category = product['hierarchyPath'][-1]['name']
-sub_category = product['hierarchyPath'][-2]['name']
-price_kg = f"{product['comparisonPrice']}€"
-image_url_template = product['productDetails']['productImages']['mainImage']['urlTemplate']
-image_url = image_url_template.replace('{MODIFIERS}', 'w384_h384_q75').replace('{EXTENSION}', 'jpg')
+    extensions = {
+        "persistedQuery": {
+            "version": 1,
+            "sha256Hash": "cae74194d7b0b9171e56ad2430ff052b96aa058699a49e30230fdb0bffbacd6b"
+        }
+    }
 
-# Print the extracted information
-print(f"Name: {name}, Category: {category}, Sub-category: {sub_category}, Price-kg: {price_kg}, Image: {image_url}")
-# Print the extracted information
-print(f"Name: {name}")
-print(f"Category: {category}")
-print(f"Sub-category: {sub_category}")
-print(f"Price-kg: {price_kg}")
-print(f"Image: {image_url}")
+    # URL-encode the variables and extensions
+    variables_encoded = urllib.parse.quote(json.dumps(variables))
+    extensions_encoded = urllib.parse.quote(json.dumps(extensions))
+
+    # Construct the complete URL
+    url = f'{base_url}?operationName=RemoteFilteredProducts&variables={variables_encoded}&extensions={extensions_encoded}'
+
+    # Define the headers
+    headers = {
+        'accept': '*/*',
+        'accept-language': 'en,en-US;q=0.9,zh-CN;q=0.8,zh;q=0.7',
+        'content-type': 'application/json',
+        'dnt': '1',
+        'origin': 'https://www.s-kaupat.fi',
+        'priority': 'u=1, i',
+        'sec-ch-ua': '"Chromium";v="124", "Microsoft Edge";v="124", "Not-A.Brand";v="99"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'cross-site',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0',
+        'x-client-name': 'skaupat-web',
+        'x-client-version': 'production-c786401e5c4d2fe0b4318ffb25ab622e4cd4d0e4'
+    }
+
+    # Send the GET request
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+
+def extract_product_info(item):
+    # Extract the desired fields
+    item_id = item['id']
+    store_id = item['storeId']
+    name = item['name']
+    category = item['hierarchyPath'][-1]['name']
+    sub_category = item['hierarchyPath'][-2]['name']
+    price_kg = f"{item['comparisonPrice']}€"
+    image_template = item['productDetails']['productImages']['mainImage']['urlTemplate']
+    image_url = image_template.replace("{MODIFIERS}", "w384_h384_q75").replace("{EXTENSION}", "jpg")
+    return {
+        "Store ID": store_id,
+        "Item ID": item_id,
+        "Name": name,
+        "Category": category,
+        "Sub-category": sub_category,
+        "Price-kg": price_kg,
+        "Image": image_url
+    }
+
+
+# Initialize pagination
+from_value = 0
+limit = 20
+all_products = []
+
+for i in range(1):  # Fetch 3 pages
+    data = fetch_data(limit, from_value)
+    products = data['data']['store']['products']['items']
+    if not products:
+        break
+    for product in products:
+        all_products.append(extract_product_info(product))
+    from_value += limit
+    sleep(1)  # Sleep for 1 second to avoid being blocked
+
+# Print all products
+for product in all_products:
+    print(product)
