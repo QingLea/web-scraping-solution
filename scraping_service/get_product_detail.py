@@ -11,7 +11,7 @@ def fetch_data(limit_value, from_value):
 
     variables = {
         "includeAvailabilities": False,
-        "availabilityDate": "2024-05-20",
+        "availabilityDate": "2024-05-22",
         "facets": [{
             "key": "brandName",
             "order": "asc"
