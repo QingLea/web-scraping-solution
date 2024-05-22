@@ -3,23 +3,16 @@ from rest_framework import serializers
 from .models import Product
 
 
-# create serializer for products
 class ProductReadSerializer(serializers.ModelSerializer):
-    created = serializers.DateTimeField(format="%d/%m,%Y %H:%M")
-    updated = serializers.DateTimeField(format="%d/%m,%Y %H:%M")
-
     class Meta:
         model = Product
-        fields = "__all__"
+        fields = ['item_id', 'name', 'category', 'sub_category', 'price', 'currency', 'image', 'store']
 
 
 class ProductWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'imageUrl', 'price', 'status', 'version']
-        extra_kwargs = {
-            'version': {'read_only': True}  # Prevent version from being set directly
-        }
+        fields = ['name', 'category', 'sub_category', 'price', 'currency', 'image', 'store']
 
 
 class LoginSerializer(serializers.Serializer):
