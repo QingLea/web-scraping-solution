@@ -1,14 +1,14 @@
 ### Start the scraping process
-POST localhost:8000/scraping/start/
+POST localhost:8000/scraper/start/
 
 ### Scraping status
-GET localhost:8000/scraping/status/
+GET localhost:8000/scraper/status/
 
 ### Stop the scraping process
-POST localhost:8000/scraping/stop/
+POST localhost:8000/scraper/stop/
 
 ### force stop the scraping process
-POST localhost:8000/scraping/force_stop/
+POST localhost:8000/scraper/force_stop/
 
 ### Reset scrapping process
-POST localhost:8000/scraping/reset/
+POST localhost:8000/scraper/reset/

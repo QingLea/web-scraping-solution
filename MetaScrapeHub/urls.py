@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from scraping import views
+from scraper import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,5 +27,5 @@ urlpatterns = [
     path("api/account/", views.UpdateAccountView.as_view()),
     path("api/products/", views.ProductsView.as_view()),
     path("api/product/<str:product_id>/", views.ProductView.as_view()),
-    path('scraping/', include('scraping.urls')),
+    path('scraper/', include('scraper.urls')),
 ]

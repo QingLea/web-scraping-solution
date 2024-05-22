@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from scraping.serializers import LoginSerializer, ProductReadSerializer, SignupSerializer, UpdateAccountSerializer
+from scraper.serializers import LoginSerializer, ProductReadSerializer, SignupSerializer, UpdateAccountSerializer
 from .models import Product
 from .scraping_controller import controller
 
