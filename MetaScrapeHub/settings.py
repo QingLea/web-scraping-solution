@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'scraper',
-    'user_service',
+    'user_app',
     'common',
     'search',
 ]
