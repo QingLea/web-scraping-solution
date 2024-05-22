@@ -6,6 +6,28 @@ from rest_framework.views import APIView
 from common.models import Product
 from scraper.serializers import ProductReadSerializer
 
+# store/views.py
+
+from django_filters import rest_framework as filters
+
+
+class ItemFilter(filters.FilterSet):
+    min_price = filters.NumberFilter(field_name="price", lookup_expr='gt')
+    max_price = filters.NumberFilter(field_name="price", lookup_expr='lt')
+    category = filters.CharFilter(field_name="category", lookup_expr='icontains')
+    name = filters.CharFilter(field_name="name", lookup_expr='icontains')
+
+    class Meta:
+        model = Item
+        fields = ['min_price', 'category', 'name']
+
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ItemFilter
+
 
 class ProductView(APIView):
     # authentication_classes = [authentication.SessionAuthentication]
