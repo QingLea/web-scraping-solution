@@ -1,4 +1,4 @@
-from rest_framework import permissions, authentication
+from rest_framework import permissions
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,8 +8,8 @@ from scraper.serializers import ProductReadSerializer
 
 
 class ProductView(APIView):
-    authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.SessionAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, product_id):
         """
@@ -30,11 +30,11 @@ class ProductView(APIView):
 
 class ProductsView(APIView):
 
-    def get_permissions(self):
-        """Set permissions dynamically based on the request method."""
-        if self.request.method == 'GET':
-            return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+    # def get_permissions(self):
+    #     """Set permissions dynamically based on the request method."""
+    #     if self.request.method == 'GET':
+    #         return [permissions.AllowAny()]
+    #     return [permissions.IsAuthenticated()]
 
     def get(self, request):
         key_word = request.query_params.get('key_word', '')
