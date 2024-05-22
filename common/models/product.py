@@ -1,13 +1,6 @@
-# store/models.py
-
 from django.db import models
 
-
-class Store(models.Model):
-    id = models.CharField(max_length=50, primary_key=True)
-
-    def __str__(self):
-        return self.id
+from .store import Store
 
 
 class Product(models.Model):
@@ -29,12 +22,3 @@ class Product(models.Model):
 
     class Meta:
         ordering = ["-updated", "-created"]
-
-
-class ScrapingState(models.Model):
-    from_value = models.IntegerField()
-    scraped_records = models.IntegerField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"From: {self.from_value}, Scraped: {self.scraped_records}, At: {self.timestamp}"

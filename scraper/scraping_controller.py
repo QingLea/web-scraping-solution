@@ -8,7 +8,7 @@ from decimal import Decimal
 import requests
 from django.utils import timezone
 
-from .models import ScrapingState, Product, Store
+from common.models import ScrapingState, Product, Store
 
 
 class ScrapingController:
