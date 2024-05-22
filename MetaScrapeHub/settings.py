@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'scraper',
     'user_service',
     'common',
+    'search',
 ]
 
 MIDDLEWARE = [
