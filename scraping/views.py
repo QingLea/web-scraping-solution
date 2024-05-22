@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from rest_framework import permissions, authentication
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,6 +9,7 @@ from rest_framework.views import APIView
 
 from scraping.serializers import LoginSerializer, ProductReadSerializer, SignupSerializer, UpdateAccountSerializer
 from .models import Product
+from .scraping_controller import controller
 
 
 class LoginView(APIView):
@@ -122,24 +124,35 @@ class ProductsView(APIView):
         return Response(serializer.data, content_type='application/json')
 
 
-class ScrapingView(APIView):
-    authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        """
-        Get the current status of scraping.
-        """
-        pass
+class StartScrapingView(APIView):
+    # todo uncomment the following lines to enable authentication
+    # authentication_classes = [authentication.SessionAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        """
-        Start scraping products from a store.
-        """
-        pass
+        message = controller.start_scraping()
+        return JsonResponse({"message": message})
 
-    def delete(self, request):
-        """
-        Stop scraping.
-        """
-        pass
+
+class StopScrapingView(APIView):
+    def post(self, request):
+        message = controller.stop_scraping()
+        return JsonResponse({"message": message})
+
+
+class ForceStopScrapingView(APIView):
+    def post(self, request):
+        message = controller.force_stop_scraping()
+        return JsonResponse({"message": message})
+
+
+class ScrapingStatusView(APIView):
+    def get(self, request):
+        status = controller.get_status()
+        return JsonResponse(status)
+
+
+class ResetScrapingView(APIView):
+    def post(self, request):
+        message = controller.reset_scraping()
+        return JsonResponse({"message": message})
