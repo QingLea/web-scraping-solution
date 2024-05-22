@@ -1,5 +1,5 @@
 """
-ASGI config for MetaScrapeHub project.
+ASGI config for meta_scrape_hub project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MetaScrapeHub.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'meta_scrape_hub.settings')
 
 application = get_asgi_application()
