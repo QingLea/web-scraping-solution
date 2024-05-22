@@ -120,3 +120,26 @@ class ProductsView(APIView):
         products = Product.objects.filter(name__contains=key_word) if key_word else Product.objects.all()
         serializer = ProductReadSerializer(products, many=True)
         return Response(serializer.data, content_type='application/json')
+
+
+class ScrapingView(APIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        """
+        Get the current status of scraping.
+        """
+        pass
+
+    def post(self, request):
+        """
+        Start scraping products from a store.
+        """
+        pass
+
+    def delete(self, request):
+        """
+        Stop scraping.
+        """
+        pass

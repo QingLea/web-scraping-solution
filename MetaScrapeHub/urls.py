@@ -23,8 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/login/", views.LoginView.as_view()),
     path("api/user/", views.UserView.as_view()),
-    path("api/products/", views.ProductsView.as_view()),
-    path("api/product/<int:product_id>/", views.ProductView.as_view()),
     path("api/signup/", views.SignupView.as_view()),
     path("api/account/", views.UpdateAccountView.as_view()),
+    path("api/products/", views.ProductsView.as_view()),
+    path("api/product/<str:product_id>/", views.ProductView.as_view()),
+    path("api/scraping/", views.ScrapingView.as_view()),
 ]
+

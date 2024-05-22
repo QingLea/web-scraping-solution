@@ -74,7 +74,10 @@ def extract_product_info(item):
     name = item['name']
     category = item['hierarchyPath'][-1]['name']
     sub_category = item['hierarchyPath'][-2]['name']
-    price_kg = f"{item['comparisonPrice']}€"
+    price = item['price']
+    comparison_price = item['comparisonPrice']
+    comparison_unit = item['comparisonUnit']
+    currency = "€"
     image_template = item['productDetails']['productImages']['mainImage']['urlTemplate']
     image_url = image_template.replace("{MODIFIERS}", "w384_h384_q75").replace("{EXTENSION}", "jpg")
     return {
@@ -83,7 +86,9 @@ def extract_product_info(item):
         "Name": name,
         "Category": category,
         "Sub-category": sub_category,
-        "Price-kg": price_kg,
+        "price": f"{price}{currency}",
+        "ComparisonPrice": f"{comparison_price}{currency}",
+        "ComparisonUnit": comparison_unit,
         "Image": image_url
     }
 
