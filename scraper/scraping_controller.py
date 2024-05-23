@@ -21,7 +21,6 @@ class ScrapingController:
         self.thread = None
         self.date = timezone.now().strftime("%Y-%m-%d")
         self.step_length = 120  # Maximum Number of items to fetch per request that the API allows
-        self.target_records = 0
         self.from_value = 0
         self.scraped_records = 0
         self.force_stop_flag = False
@@ -102,14 +101,11 @@ class ScrapingController:
             return None
 
     def get_status(self):
-        remaining = max(self.target_records - self.scraped_records, 0)
         return {
             "is_running": self.is_running,
             "step_length": self.step_length,
             "from": self.from_value,
-            "target_records": self.target_records,
             "scraped_records": self.scraped_records,
-            "remaining_records": remaining
         }
 
     @staticmethod
@@ -216,17 +212,11 @@ class ScrapingController:
         )
 
     def _scrape(self):
-        # get to know how many should be scraped
-        self.target_records = self.fetch_count()
-        if self.target_records is None:
-            logger.error("Failed to fetch total count, aborting scraping")
-            self.is_running = False
-            return
 
         backoff_time = 1  # Initial backoff time in seconds
         max_backoff_time = 64  # Maximum backoff time in seconds
 
-        while self.is_running and self.scraped_records < self.target_records:
+        while self.is_running:
             if self.force_stop_flag:
                 logger.warning("Force stop flag detected, stopping scraping")
                 break
@@ -234,7 +224,8 @@ class ScrapingController:
                 data = self.fetch_data(self.date, self.step_length, self.from_value)
                 products = data['data']['store']['products']['items']
                 if not products:
-                    logger.warning("No more products to scrape")
+                    self.is_running = False
+                    logger.info("No more products to scrape, Scraping completed")
                     break
                 for product in products:
                     product_info = self.extract_product_info(product)
@@ -243,9 +234,6 @@ class ScrapingController:
                 self.scraped_records += self.step_length
                 self.from_value += self.step_length
                 self._save_state()
-                if self.scraped_records >= self.target_records:
-                    self.is_running = False
-                    logger.info("Scraping completed")
                 backoff_time = 1  # Reset backoff time after successful request
             except Exception as e:
                 logger.error(f"Error during scraping: {e}")
@@ -254,7 +242,7 @@ class ScrapingController:
             sleep_time = random.uniform(1, 3)  # Random sleep between 1 and 3 seconds
             time.sleep(sleep_time)  # Pause to avoid being blocked
         self.is_running = False
-        logger.info("Scraping task finished or force stopped")
+        logger.info("Scraping task finished")
 
     def _load_state(self):
         try:
