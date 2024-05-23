@@ -130,7 +130,7 @@ class ScrapingController:
             "queryString": "",
             "searchProvider": "loop54",
             "slug": "",
-            "sortForAvailabilityLabelDate": "2024-05-20",
+            "sortForAvailabilityLabelDate": date,
             "storeId": "513971200",
             "useRandomId": True,
             "from": from_value,
@@ -151,9 +151,11 @@ class ScrapingController:
         headers = {
             'accept': '*/*',
             'accept-language': 'en,en-US;q=0.9,zh-CN;q=0.8,zh;q=0.7',
+            'cache-control': 'no-cache',
             'content-type': 'application/json',
             'dnt': '1',
             'origin': 'https://www.s-kaupat.fi',
+            'pragma': 'no-cache',
             'priority': 'u=1, i',
             'sec-ch-ua': '"Chromium";v="124", "Microsoft Edge";v="124", "Not-A.Brand";v="99"',
             'sec-ch-ua-mobile': '?0',
@@ -163,7 +165,7 @@ class ScrapingController:
             'sec-fetch-site': 'cross-site',
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0',
             'x-client-name': 'skaupat-web',
-            'x-client-version': 'production-c786401e5c4d2fe0b4318ffb25ab622e4cd4d0e4'
+            'x-client-version': 'production-d8c0322e8435ce1f23ffd1b237dca4534dbe17ea'
         }
 
         response = requests.get(url, headers=headers)
@@ -232,6 +234,7 @@ class ScrapingController:
                 data = self.fetch_data(self.date, self.step_length, self.from_value)
                 products = data['data']['store']['products']['items']
                 if not products:
+                    logger.warning("No more products to scrape")
                     break
                 for product in products:
                     product_info = self.extract_product_info(product)
