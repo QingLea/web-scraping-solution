@@ -1,5 +1,5 @@
 from django.db.models import Q
-from rest_framework import status
+from rest_framework import status, permissions, authentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,6 +8,8 @@ from search.serializers import ProductReadSerializer
 
 
 class ProductDetailView(APIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, product_id):
         """
@@ -24,12 +26,8 @@ class ProductDetailView(APIView):
 
 
 class ProductsView(APIView):
-
-    # def get_permissions(self):
-    #     """Set permissions dynamically based on the request method."""
-    #     if self.request.method == 'GET':
-    #         return [permissions.AllowAny()]
-    #     return [permissions.IsAuthenticated()]
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         """
