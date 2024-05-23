@@ -3,3 +3,7 @@ GET http://localhost:8000/api/product/?min_price=1.00&max_price=2.00&limit=2&off
 
 ### GET dummy Search Store ID
 GET http://localhost:8000/api/product/?store_id=&limit=2&offset=0
+
+
+### GET dummy product
+GET http://localhost:8000/api/product/2000614400003

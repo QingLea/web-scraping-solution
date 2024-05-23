@@ -8,23 +8,18 @@ from common.models import Product
 from search.serializers import ProductReadSerializer
 
 
-class ProductView(APIView):
-    # authentication_classes = [authentication.SessionAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+class ProductDetailView(APIView):
 
     def get(self, request, product_id):
         """
-        detailed view of a product
+        Detailed view of a product
         """
         try:
-            product = Product.objects.filter(pk=product_id, owner=request.user).first()
-            if not product:
-                return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+            product = Product.objects.get(id=product_id)
             serialized = ProductReadSerializer(product)
             return Response(serialized.data, content_type='application/json')
         except Product.DoesNotExist:
             return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
-
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
