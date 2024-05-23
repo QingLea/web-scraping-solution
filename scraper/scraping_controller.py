@@ -7,6 +7,7 @@ import urllib.parse
 from decimal import Decimal
 
 import requests
+from bs4 import BeautifulSoup
 from django.utils import timezone
 
 from common.models import ScrapingState, Product, Store
@@ -15,15 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 class ScrapingController:
-    def __init__(self, date="2024-05-20", step_length=120, target_records=1000):
-        # hardcoded limit value 120 because the API only allows maximum 120 items per request
-        # hardcode default date value 2024-05-20 for the sake of this example
+    def __init__(self):
         self.is_running = False
         self.thread = None
-        # self.date = timezone.now().strftime("%Y-%m-%d")
-        self.date = date
-        self.step_length = step_length
-        self.target_records = target_records
+        self.date = timezone.now().strftime("%Y-%m-%d")
+        self.step_length = 120  # Maximum Number of items to fetch per request that the API allows
+        self.target_records = 0
         self.from_value = 0
         self.scraped_records = 0
         self.force_stop_flag = False
@@ -64,6 +62,44 @@ class ScrapingController:
         self.from_value = 0
         self.scraped_records = 0
         return "Scraping progress reset"
+
+    @staticmethod
+    def fetch_count():
+        try:
+            # Send a GET request to the URL
+            response = requests.get("https://www.s-kaupat.fi/tuotteet")
+            response.raise_for_status()  # Check for request errors
+
+            # Parse the HTML content using BeautifulSoup
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            # Find the element with id="__NEXT_DATA__"
+            next_data_element = soup.find(id="__NEXT_DATA__")
+
+            # Check if the element is found
+            if next_data_element:
+                # Parse next_data_element to JSON
+                next_data = json.loads(next_data_element.get_text())
+
+                # Extract the total_ value from the JSON data
+                total_ = next_data['props']['pageProps']['apolloState'] \
+                    ['Store:{"id":"513971200"}'] \
+                    ['products:{"includeAgeLimitedByAlcohol":true,"queryString":"",' \
+                     '"searchProvider":"loop54","slug":"",' \
+                     '"useRandomId":true}']['total']
+                return total_
+            else:
+                logger.error("Element with id='__NEXT_DATA__' not found.")
+                return None
+        except requests.RequestException as e:
+            logger.error(f"Request error: {e}")
+            return None
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error: {e}")
+            return None
+        except KeyError as e:
+            logger.error(f"Key error: {e}")
+            return None
 
     def get_status(self):
         remaining = max(self.target_records - self.scraped_records, 0)
@@ -178,6 +214,13 @@ class ScrapingController:
         )
 
     def _scrape(self):
+        # get to know how many should be scraped
+        self.target_records = self.fetch_count()
+        if self.target_records is None:
+            logger.error("Failed to fetch total count, aborting scraping")
+            self.is_running = False
+            return
+
         backoff_time = 1  # Initial backoff time in seconds
         max_backoff_time = 64  # Maximum backoff time in seconds
 
@@ -227,4 +270,4 @@ class ScrapingController:
         )
 
 
-controller = ScrapingController(date=timezone.now().strftime("%Y-%m-%d"))
+controller = ScrapingController()
