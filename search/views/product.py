@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -69,11 +68,11 @@ class ProductsView(APIView):
             limit = int(query_params.get('limit'))
             offset = int(query_params.get('offset'))
         except (TypeError, ValueError):
-            return JsonResponse({"error": "Invalid limit or from parameter"}, status=400)
+            return Response({"error": "Invalid limit or from parameter"}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch only the items needed for the current page
         products = Product.objects.filter(filters)[offset:offset + limit]
 
         items_data = list(
             products.values('id', 'name', 'category', 'sub_category', 'price', 'currency', 'image', 'store_id'))
-        return JsonResponse(items_data, safe=False)
+        return Response(items_data)
