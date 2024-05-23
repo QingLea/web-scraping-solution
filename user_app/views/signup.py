@@ -3,8 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from scraper.serializers import SignupSerializer
-
+from user_app.serializers import SignupSerializer
 
 class SignupView(APIView):
     """

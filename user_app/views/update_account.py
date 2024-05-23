@@ -4,8 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from scraper.serializers import UpdateAccountSerializer
-
+from user_app.serializers import UpdateAccountSerializer
 
 class UpdateAccountView(APIView):
     authentication_classes = [authentication.SessionAuthentication]

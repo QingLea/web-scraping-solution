@@ -3,7 +3,7 @@ from django.contrib.auth import logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from scraper.serializers import LoginSerializer
+from user_app.serializers import LoginSerializer
 
 
 class LoginView(APIView):
