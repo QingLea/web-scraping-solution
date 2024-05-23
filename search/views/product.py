@@ -53,15 +53,26 @@ class ProductsView(APIView):
                 min_price = float(query_params['min_price'])
                 filters &= Q(price__gte=min_price)
             except ValueError:
-                pass  # Handle the case where min_price is not a valid float
+                return Response({"error": "Invalid min_price parameter"}, status=status.HTTP_400_BAD_REQUEST)
         if 'max_price' in query_params:
             try:
                 max_price = float(query_params['max_price'])
                 filters &= Q(price__lte=max_price)
             except ValueError:
-                pass  # Handle the case where max_price is not a valid float
+                return Response({"error": "Invalid max_price parameter"}, status=status.HTTP_400_BAD_REQUEST)
+        if 'min_comparison_price' in query_params:
+            try:
+                min_comparison_price = float(query_params['min_comparison_price'])
+                filters &= Q(comprsion_price__gte=min_comparison_price)
+            except ValueError:
+                return Response({"error": "Invalid min_comparison_price parameter"}, status=status.HTTP_400_BAD_REQUEST)
+        if 'max_comparison_price' in query_params:
+            try:
+                max_comparison_price = float(query_params['max_comparison_price'])
+                filters &= Q(comprsion_price__lte=max_comparison_price)
+            except ValueError:
+                return Response({"error": "Invalid max_comparison_price parameter"}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Handle limit and from parameters
         try:
             limit = int(query_params.get('limit'))
             offset = int(query_params.get('offset'))
