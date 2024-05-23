@@ -158,7 +158,7 @@ class ScrapingController:
 
     @staticmethod
     def save_product_to_db(product_info):
-        store, created = Store.objects.get_or_create(id=product_info['id'])
+        store, created = Store.objects.get_or_create(id=product_info['store_id'])
         Product.objects.update_or_create(
             id=product_info['id'],
             defaults={

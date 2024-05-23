@@ -72,12 +72,12 @@ class ProductsView(APIView):
             # Handle limit and from parameters
         try:
             limit = int(query_params.get('limit'))
-            offset_from = int(query_params.get('from'))
+            offset = int(query_params.get('offset'))
         except (TypeError, ValueError):
             return JsonResponse({"error": "Invalid limit or from parameter"}, status=400)
 
             # Fetch only the items needed for the current page
-        products = Product.objects.filter(filters)[offset_from:offset_from + limit]
+        products = Product.objects.filter(filters)[offset:offset + limit]
 
         items_data = list(
             products.values('id', 'name', 'category', 'sub_category', 'price', 'currency', 'image', 'store_id'))

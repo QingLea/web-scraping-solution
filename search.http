@@ -1,2 +1,2 @@
 ### GET request to example server
-GET http://localhost:8000/api/product/?min_price=1.00&max_price=2.00
+GET http://localhost:8000/api/product/?min_price=1.00&max_price=2.00&limit=2&offset=0
