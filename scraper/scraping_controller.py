@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 import threading
 import time
@@ -9,6 +10,8 @@ import requests
 from django.utils import timezone
 
 from common.models import ScrapingState, Product, Store
+
+logger = logging.getLogger(__name__)
 
 
 class ScrapingController:
@@ -180,7 +183,7 @@ class ScrapingController:
 
         while self.is_running and self.scraped_records < self.target_records:
             if self.force_stop_flag:
-                print("Force stop flag detected, stopping scraping")
+                logger.warning("Force stop flag detected, stopping scraping")
                 break
             try:
                 data = self.fetch_data(self.date, self.step_length, self.from_value)
@@ -190,20 +193,22 @@ class ScrapingController:
                 for product in products:
                     product_info = self.extract_product_info(product)
                     self.save_product_to_db(product_info)
-                    print(product_info)  # Print or save the product info
+                    logger.debug(product_info)
                 self.scraped_records += self.step_length
                 self.from_value += self.step_length
                 self._save_state()
                 if self.scraped_records >= self.target_records:
                     self.is_running = False
-                    print("Scraping completed")
+                    logger.info("Scraping completed")
                 backoff_time = 1  # Reset backoff time after successful request
             except Exception as e:
-                print(f"Error during scraping: {e}")
+                logger.error(f"Error during scraping: {e}")
                 time.sleep(backoff_time)
                 backoff_time = min(backoff_time * 2, max_backoff_time)  # Exponential backoff
             sleep_time = random.uniform(1, 3)  # Random sleep between 1 and 3 seconds
             time.sleep(sleep_time)  # Pause to avoid being blocked
+        self.is_running = False
+        logger.info("Scraping task finished or force stopped")
 
     def _load_state(self):
         try:
