@@ -11,19 +11,19 @@ class StartScrapingView(APIView):
 
     def post(self, request):
         message = controller.start_scraping()
-        return Response({"message": message})
+        return Response({"detail": message})
 
 
 class StopScrapingView(APIView):
     def post(self, request):
         message = controller.stop_scraping()
-        return Response({"message": message})
+        return Response({"detail": message})
 
 
 class ForceStopScrapingView(APIView):
     def post(self, request):
         message = controller.force_stop_scraping()
-        return Response({"message": message})
+        return Response({"detail": message})
 
 
 class ScrapingStatusView(APIView):
@@ -35,4 +35,4 @@ class ScrapingStatusView(APIView):
 class ResetScrapingView(APIView):
     def post(self, request):
         message = controller.reset_scraping()
-        return Response({"message": message})
+        return Response({"detail": message})
