@@ -17,7 +17,7 @@ X-CSRFToken: ftOniQbzCZycDAmGnLn3C4Y597QwCM24
 
 {
   "username": "liqing",
-  "password": "liqing"
+  "password": "liqingliqing"
 }
 ### logout
 DELETE http://localhost:8000/api/user/login/
