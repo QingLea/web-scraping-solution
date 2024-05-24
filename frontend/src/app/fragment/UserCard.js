@@ -1,9 +1,39 @@
-import React from 'react';
-import {Button, ButtonGroup, Card} from 'react-bootstrap';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Button, ButtonGroup, Card, Spinner} from 'react-bootstrap';
 import {useRouter} from 'next/navigation';
+import {csrftoken} from "@/utils/csrfCookie";
 
-const UserCard = ({user, logout}) => {
+const useUser = () => {
+    const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    const fetchUser = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await fetch("/api/user/profile/", {
+                headers: {"Content-type": "application/json"},
+            });
+            const data = await res.json();
+            setUser(data);
+        } catch (error) {
+            console.error("Failed to fetch user data:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchUser();
+    }, [fetchUser]);
+
+    return {user, loading, fetchUser};
+};
+
+
+const UserCard = () => {
     const router = useRouter();
+    const {user, loading: userLoading, fetchUser} = useUser();
+
 
     const navigateToLogin = () => {
         router.push('/login');
@@ -14,20 +44,38 @@ const UserCard = ({user, logout}) => {
     const navigateToEdit = () => {
         router.push('/account');
     }
+
+    const logout = async () => {
+        try {
+            await fetch('/api/user/login/', {
+                method: "DELETE",
+                headers: {
+                    "Content-type": "application/json",
+                    "X-CSRFToken": csrftoken(),
+                },
+            });
+            fetchUser(); // Refetch user data to reset state
+        } catch (error) {
+            console.error("Failed to logout:", error);
+        }
+    };
+
     return (
-        <Card border={"dark"}>
+        <Card border="dark">
             <Card.Header>User</Card.Header>
             <Card.Body>
-                {user && user.id ? (
+                {userLoading ? (
+                    <Spinner animation="border"/>
+                ) : user && user.id ? (
                     <>
                         <Card.Text>User: {user.username}</Card.Text>
-                        <ButtonGroup size={"sm"}>
+                        <ButtonGroup size="sm">
                             <Button variant="danger" onClick={logout}>Logout</Button>
                             <Button variant="outline-danger" onClick={navigateToEdit}>Account</Button>
                         </ButtonGroup>
                     </>
                 ) : (
-                    <ButtonGroup size={"sm"}>
+                    <ButtonGroup size="sm">
                         <Button variant="outline-success" onClick={navigateToLogin}>Login</Button>
                         <Button variant="success" onClick={navigateToSignup}>Register</Button>
                     </ButtonGroup>
