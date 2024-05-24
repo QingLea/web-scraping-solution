@@ -6,6 +6,7 @@ import {csrftoken} from "@/utils/csrfCookie";
 import ToastNotification from "@/app/fragment/ToastNotification";
 import UserCard from "@/app/fragment/UserCard";
 import {useRouter} from "next/navigation";
+import ProductList from "@/app/fragment/ProductList";
 
 export default function Home() {
     const router = useRouter();
@@ -72,14 +73,7 @@ export default function Home() {
         <main>
             <Container>
                 <Row>
-                    <Col xs={8} md={8} lg={8}>
-                        <Card border={"dark"}>
-                            <Card.Header className="d-flex justify-content-between align-items-center">
-                                <span>Products</span>
-                            </Card.Header>
-                        </Card>
-                    </Col>
-                    <Col xs={4} md={4} lg={4}>
+                    <Col xs={12} md={12} lg={12}>
                         <Row>
                             <Col>
                                 <UserCard user={user} logout={logout}/>
@@ -87,6 +81,19 @@ export default function Home() {
                         </Row>
                     </Col>
                     <ToastNotification message={toastMessage} show={showToast} onClose={() => setShowToast(false)}/>
+                </Row>
+                <Row>
+                    <Col xs={12} md={12} lg={12}>
+                        <Card border={"dark"}>
+                            <Card.Header className="d-flex justify-content-between align-items-center">
+                                <span>Products</span>
+                            </Card.Header>
+                            <Card.Body>
+                                <ProductList products={products}/>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
                 </Row>
             </Container>
         </main>

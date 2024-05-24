@@ -1,39 +1,26 @@
-import {Button, Row} from "react-bootstrap";
 import ProductPreview from "@/app/fragment/ProductPreview";
 
 const ProductCard = ({
-                         imageUrl,
+                         id,
                          name,
-                         description,
+                         category,
+                         sub_category,
                          price,
-                         status,
+                         comparison_price,
+                         comparison_unit,
+                         currency,
+                         image,
                          created,
                          updated,
-                         userId,
-                         owner,
-                         productId,
-                         addToCartAction,
-                         editAction
+                         store
                      }) => {
 
-    let button;
-
-    if (status === "SO" && (!userId || owner !== userId)) {
-        button = <Button variant="outline-primary" disabled={true}>Sold</Button>;
-    } else if (userId && owner === userId) {
-        button = <Button variant="outline-dark" className={"mt-2"} onClick={() => editAction(productId)}>Edit</Button>;
-    } else {
-        button = <Button variant="outline-primary" onClick={addToCartAction}>Add to Cart</Button>;
-    }
-
     return (
-        <ProductPreview title={name} description={description} price={price} imageUrl={imageUrl} status={status}
-                        created={created} updated={updated} child={
-            <Row>
-                {button}
-            </Row>
-        }/>);
-
+        <ProductPreview id={id} name={name} category={category} sub_category={sub_category} price={price}
+                        comparison_price={comparison_price} comparison_unit={comparison_unit} currency={currency}
+                        image={image} created={created} updated={updated} store={store}/>
+    );
 
 }
+
 export default ProductCard;

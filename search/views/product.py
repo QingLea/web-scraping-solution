@@ -81,7 +81,6 @@ class ProductsView(APIView):
 
             # Fetch only the items needed for the current page
         products = Product.objects.filter(filters)[offset:offset + limit]
+        items_data = ProductReadSerializer(products, many=True).data
 
-        items_data = list(
-            products.values('id', 'name', 'category', 'sub_category', 'price', 'currency', 'image', 'store_id'))
         return Response(items_data)
