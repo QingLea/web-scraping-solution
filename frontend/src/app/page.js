@@ -1,73 +1,107 @@
 "use client";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Card, Col, Container, Row} from 'react-bootstrap';
-import {useEffect, useState} from "react";
+import {Button, Card, Col, Container, Row, Spinner} from 'react-bootstrap';
+import {useCallback, useEffect, useState} from "react";
 import {csrftoken} from "@/utils/csrfCookie";
 import ToastNotification from "@/app/fragment/ToastNotification";
 import UserCard from "@/app/fragment/UserCard";
-import {useRouter} from "next/navigation";
 import ProductList from "@/app/fragment/ProductList";
 
-export default function Home() {
-    const router = useRouter();
-
-    const [products, setProducts] = useState([]);
+// Custom hook for fetching user data
+const useUser = () => {
     const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    const [showToast, setShowToast] = useState(false);
-    const [toastMessage, setToastMessage] = useState('');
-
-    const [search, setSearch] = useState('');
-
-
-    const currentUser = async () => {
-        const res = await fetch("/api/user/profile/", {
-            headers: {"Content-type": "application/json"},
-        });
-        return await res.json(); // Return user data directly
-    };
+    const fetchUser = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await fetch("/api/user/profile/", {
+                headers: {"Content-type": "application/json"},
+            });
+            const data = await res.json();
+            setUser(data);
+        } catch (error) {
+            console.error("Failed to fetch user data:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
-        const initializeData = async () => {
-            await loadProducts(); // Load products first
-            setUser(await currentUser()); // Set user state
-        };
-        initializeData();
-    }, []); // Empty dependency array ensures this runs once on component mount
+        fetchUser();
+    }, [fetchUser]);
 
+    return {user, loading, fetchUser};
+};
 
-    //  logout the user
-    const logout = async () => {
-        await fetch('api/user/login/', {
-            method: "DELETE",
-            headers: {
-                "Content-type": "application/json",
-                "X-CSRFToken": csrftoken(),
-            },
-        });
-        setUser({}); // Clear the user state
-    };
+// Custom hook for fetching product data with pagination
+const useProducts = () => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [offset, setOffset] = useState(0);
+    const limit = 20;
 
-    const loadProducts = async () => {
+    const fetchProducts = useCallback(async (reset = false) => {
+        setLoading(true);
         try {
             const url = new URL("/api/product/", window.location.origin);
-            url.searchParams.append("limit", "20");
-            url.searchParams.append("offset", "0");
-            const res = await fetch(url, {
-                method: "GET"
-            });
+            url.searchParams.append("limit", limit);
+            url.searchParams.append("offset", reset ? 0 : offset);
+            const res = await fetch(url, {method: "GET"});
             const data = await res.json();
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status} detail:` + data.detail);
             }
-            setProducts(data);
-
+            if (reset) {
+                setProducts(data);
+                setOffset(limit);
+            } else {
+                setProducts(prevProducts => [...prevProducts, ...data]);
+                setOffset(prevOffset => prevOffset + limit);
+            }
         } catch (error) {
-            setToastMessage("Failed to fetch products:" + error.message);
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [offset]);
+
+    useEffect(() => {
+        fetchProducts(true).then(() => console.log("Initial products loaded"));
+    },[]);
+
+    return {products, loading, error, fetchMoreProducts: () => fetchProducts(false)};
+};
+
+export default function Home() {
+    const {user, loading: userLoading, fetchUser} = useUser();
+    const {products, loading: productsLoading, error: productsError, fetchMoreProducts} = useProducts();
+
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+
+    useEffect(() => {
+        if (productsError) {
+            setToastMessage("Failed to fetch products: " + productsError);
             setShowToast(true);
         }
-    };
+    }, [productsError]);
 
+    const logout = async () => {
+        try {
+            await fetch('/api/user/login/', {
+                method: "DELETE",
+                headers: {
+                    "Content-type": "application/json",
+                    "X-CSRFToken": csrftoken(),
+                },
+            });
+            fetchUser(); // Refetch user data to reset state
+        } catch (error) {
+            console.error("Failed to logout:", error);
+        }
+    };
 
     return (
         <main>
@@ -76,7 +110,7 @@ export default function Home() {
                     <Col xs={12} md={12} lg={12}>
                         <Row>
                             <Col>
-                                <UserCard user={user} logout={logout}/>
+                                {userLoading ? <Spinner animation="border"/> : <UserCard user={user} logout={logout}/>}
                             </Col>
                         </Row>
                     </Col>
@@ -89,11 +123,15 @@ export default function Home() {
                                 <span>Products</span>
                             </Card.Header>
                             <Card.Body>
-                                <ProductList products={products}/>
+                                {productsLoading ? <Spinner animation="border"/> : <ProductList products={products}/>}
+                                <div className="d-flex justify-content-center mt-3">
+                                    <Button onClick={fetchMoreProducts} disabled={productsLoading}>
+                                        {productsLoading ? "Loading..." : "Load More Products"}
+                                    </Button>
+                                </div>
                             </Card.Body>
                         </Card>
                     </Col>
-
                 </Row>
             </Container>
         </main>
