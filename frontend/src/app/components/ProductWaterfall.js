@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import ProductCard from "@/app/fragment/ProductCard";
 
-const Waterfall = ({apiEndpoint, limit}) => {
+const ProductWaterfall = ({apiEndpoint, limit}) => {
     const containerRef = useRef(null);
     const sentinelRef = useRef(null);
     const [switcher, setSwitcher] = useState(false);
@@ -273,4 +273,4 @@ const Waterfall = ({apiEndpoint, limit}) => {
     );
 };
 
-export default Waterfall;
+export default ProductWaterfall;
