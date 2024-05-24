@@ -14,6 +14,7 @@ export default function Account() {
     const [newPassword, setNewPassword] = useState('');
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [toastTitle, setToastTitle] = useState('');
     const router = useRouter();
 
     const navigateToHome = () => {
@@ -41,6 +42,7 @@ export default function Account() {
                 throw new Error(data.detail);
             }
         } catch (error) {
+            setToastTitle("Error");
             setToastMessage(error.message); // Set the error message for the toast
             setShowToast(true); // Show the toast
         }
@@ -92,7 +94,8 @@ export default function Account() {
                     </Form.Group>
                 </Form>
             </Row>
-            <ToastNotification show={showToast} message={toastMessage} onClose={() => setShowToast(false)}/>
+            <ToastNotification title={toastTitle} show={showToast} message={toastMessage}
+                               onClose={() => setShowToast(false)}/>
         </Container>
     );
 }

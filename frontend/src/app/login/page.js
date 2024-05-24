@@ -19,6 +19,8 @@ function LoginPage() {
 
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [toastTitle, setToastTitle] = useState('');
+
     const handleLogin = async (e) => {
         e.preventDefault(); // Prevent the default form submit action
         try {
@@ -37,6 +39,7 @@ function LoginPage() {
                 throw new Error(data.detail);
             }
         } catch (error) {
+            setToastTitle("Error");
             setToastMessage(error.message); // Set the error message for the toast
             setShowToast(true); // Show the toast
         }
@@ -86,7 +89,7 @@ function LoginPage() {
                     </Form.Group>
                 </Form>
             </Row>
-            <ToastNotification message={toastMessage} show={showToast} onClose={() => {
+            <ToastNotification title={toastTitle} message={toastMessage} show={showToast} onClose={() => {
                 setShowToast(false);
             }}/>
         </Container>

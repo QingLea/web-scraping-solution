@@ -2,7 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Col, Container, Row} from 'react-bootstrap';
 import UserCard from "@/app/fragment/UserCard";
-import Waterfall from "@/app/components/Waterfall";
+import ProductWaterfall from "@/app/components/ProductWaterfall";
 
 
 // Custom hook for fetching product data with pagination
@@ -20,7 +20,7 @@ export default function Home() {
                     </Col>
                 </Row>
                 <Row>
-                    <Waterfall apiEndpoint={"/api/product/"} limit={20}/>
+                    <ProductWaterfall apiEndpoint={"/api/product/"} limit={20}/>
                 </Row>
             </Container>
         </main>
