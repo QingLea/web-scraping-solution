@@ -23,7 +23,7 @@ export default function Home() {
 
                 </Row>
                 <Row>
-                    <h1>Products</h1>
+                    <h1>Search & Products</h1>
                     <ProductWaterfall apiEndpoint={"/api/product/"} limit={20}/>
                 </Row>
             </Container>

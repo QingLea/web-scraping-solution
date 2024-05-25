@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from django.utils import timezone
 
-from common.models import ScrapingState, Product, Store
+from common.models import ScrapingState, Product, Store, Category, SubCategory
 
 logger = logging.getLogger(__name__)
 
@@ -196,12 +196,20 @@ class ScrapingController:
     @staticmethod
     def save_product_to_db(product_info):
         store, created = Store.objects.get_or_create(id=product_info['store_id'])
+        category, created = Category.objects.get_or_create(name=product_info['category'])
+        sub_category = None
+        if product_info.get('sub_category'):
+            sub_category, created = SubCategory.objects.get_or_create(
+                name=product_info['sub_category'],
+                category=category
+            )
+
         Product.objects.update_or_create(
             id=product_info['id'],
             defaults={
                 "name": product_info['name'],
-                "category": product_info['category'],
-                "sub_category": product_info['sub_category'],
+                "category": category,
+                "sub_category": sub_category,
                 "price": product_info['price'],
                 "comparison_price": product_info['comparison_price'],
                 "comparison_unit": product_info['comparison_unit'],
