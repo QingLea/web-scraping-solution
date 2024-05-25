@@ -36,13 +36,13 @@ const UserCard = () => {
 
 
     const navigateToLogin = () => {
-        router.push('/login');
+        router.push('/user/login');
     };
     const navigateToSignup = () => {
-        router.push('/signup');
+        router.push('/user/signup');
     };
     const navigateToEdit = () => {
-        router.push('/account');
+        router.push('/user/account');
     }
 
     const logout = async () => {

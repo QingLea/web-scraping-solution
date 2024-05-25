@@ -7,8 +7,8 @@
 
 .toast-top-center {
     position: fixed;
-    top: 0; /* 定位到顶部 */
-    left: 50%; /* 与左边界的距离设置为50%，配合transform使用实现水平居中 */
-    transform: translateX(-50%); /* 向左移动自身宽度的50%，与left配合使用实现水平居中 */
-    z-index: 1050; /* 确保 Toast 浮于其他内容之上 */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
 }
