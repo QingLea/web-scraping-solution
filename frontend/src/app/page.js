@@ -1,8 +1,8 @@
 "use client";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Col, Container, Row} from 'react-bootstrap';
-import UserCard from "@/app/fragment/UserCard";
-import ProductWaterfall from "@/app/components/ProductWaterfall";
+import UserCard from "@/app/components/UserCard";
+import ProductWaterfall from "@/app/components/Product/ProductWaterfall";
 
 
 // Custom hook for fetching product data with pagination
@@ -20,6 +20,10 @@ export default function Home() {
                     </Col>
                 </Row>
                 <Row>
+
+                </Row>
+                <Row>
+                    <h1>Products</h1>
                     <ProductWaterfall apiEndpoint={"/api/product/"} limit={20}/>
                 </Row>
             </Container>

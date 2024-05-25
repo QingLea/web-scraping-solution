@@ -1,8 +1,8 @@
 "use client";
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
-import ProductCard from "@/app/fragment/ProductCard";
-import ToastNotification from "@/app/fragment/ToastNotification";
+import ProductCard from "@/app/components/Product/ProductCard";
+import ToastNotification from "@/app/components/ToastNotification";
 
 const ProductWaterfall = ({apiEndpoint, limit}) => {
     const containerRef = useRef(null);

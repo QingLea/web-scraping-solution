@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Col, Container, Form, Row} from 'react-bootstrap';
 import React, {useState} from "react";
 import {useRouter} from "next/navigation";
-import ToastNotification from "@/app/fragment/ToastNotification";
+import ToastNotification from "@/app/components/ToastNotification";
 import {csrftoken} from "@/utils/csrfCookie";
 
 function SignupPage() {

@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Col, Container, Form, Row} from 'react-bootstrap';
 import {csrftoken} from "@/utils/csrfCookie";
-import ToastNotification from "@/app/fragment/ToastNotification";
+import ToastNotification from "@/app/components/ToastNotification";
 import {useRouter} from "next/navigation";
 
 

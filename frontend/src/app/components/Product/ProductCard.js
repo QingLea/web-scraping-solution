@@ -1,4 +1,4 @@
-import ProductPreview from "@/app/fragment/ProductPreview";
+import ProductPreview from "@/app/components/Product/ProductPreview";
 
 const ProductCard = ({
                          id,
