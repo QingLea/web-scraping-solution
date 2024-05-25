@@ -24,6 +24,7 @@ class ScrapingController:
         self.from_value = 0
         self.scraped_records = 0
         self.force_stop_flag = False
+        self.timestamp = 0
 
     def start_scraping(self):
         if self.is_running:
@@ -106,6 +107,7 @@ class ScrapingController:
             "step_length": self.step_length,
             "from": self.from_value,
             "scraped_records": self.scraped_records,
+            "timestamp": self.timestamp,
         }
 
     @staticmethod
@@ -257,9 +259,11 @@ class ScrapingController:
             state = ScrapingState.objects.latest('timestamp')
             self.from_value = state.from_value
             self.scraped_records = state.scraped_records
+            self.timestamp = state.timestamp
         except ScrapingState.DoesNotExist:
             self.from_value = 0
             self.scraped_records = 0
+            self.timestamp = 0
 
     def _save_state(self):
         ScrapingState.objects.create(
