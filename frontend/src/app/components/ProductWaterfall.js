@@ -2,6 +2,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import ProductCard from "@/app/fragment/ProductCard";
+import ToastNotification from "@/app/fragment/ToastNotification";
 
 const ProductWaterfall = ({apiEndpoint, limit}) => {
     const containerRef = useRef(null);
@@ -24,30 +25,44 @@ const ProductWaterfall = ({apiEndpoint, limit}) => {
         max_comparison_price: '',
     });
 
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastTitle, setToastTitle] = useState('');
+
+
     const buildQueryString = (params) => {
         return Object.entries(params)
             .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
             .join('&');
     };
-
     const fetchData = async () => {
         if (loading || !hasMore) return;
+
         setLoading(true);
+        const offset = offsetRef.current;
+        const queryString = buildQueryString({...searchParams, offset, limit});
+
         try {
-            const offset = offsetRef.current;
-            const queryString = buildQueryString({...searchParams, offset, limit});
             const response = await fetch(`${apiEndpoint}?${queryString}`);
-            const data = await response.json();
-            if (data.length === 0) {
-                setHasMore(false);
-            } else {
-                setItems(prevItems => [...prevItems, ...data]);
-                offsetRef.current += limit;
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail);
             }
+
+            const data = await response.json();
+            if (data.length < limit) {
+                setHasMore(false);
+            }
+            setItems(prevItems => [...prevItems, ...data]);
+            offsetRef.current += data.length;
         } catch (error) {
-            console.error('Error fetching data:', error);
+            setToastTitle("Error");
+            setToastMessage(error.message);
+            setShowToast(true);
+            setHasMore(false);  // Stop further fetch attempts on error
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     useEffect(() => {
@@ -103,13 +118,15 @@ const ProductWaterfall = ({apiEndpoint, limit}) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setSwitcher(false);
         setItems([]);
         setHasMore(true);
         offsetRef.current = 0;
-        fetchData().then(() => setSwitcher(true));
+
+        await fetchData();
+        setSwitcher(true);
     };
 
     return (
@@ -269,6 +286,9 @@ const ProductWaterfall = ({apiEndpoint, limit}) => {
                     </Row>
                 </Col>
             </Row>
+            <ToastNotification title={toastTitle} message={toastMessage} show={showToast} onClose={() => {
+                setShowToast(false);
+            }}/>
         </Container>
     );
 };
