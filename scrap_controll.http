@@ -1,0 +1,16 @@
+### Start the scraping process
+POST localhost:8000/api/scraper/start/
+X-CSRFToken: qJicv1BJVpttDdln0X4PZMtd2Cwvsgeh
+
+### Scraping status
+GET localhost:8000/api/scraper/status/
+
+### Stop the scraping process
+POST localhost:8000/api/scraper/stop/
+X-CSRFToken: qJicv1BJVpttDdln0X4PZMtd2Cwvsgeh
+
+### force stop the scraping process
+POST localhost:8000/api/scraper/force_stop/
+
+### Reset scrapping process
+POST localhost:8000/api/scraper/reset/
