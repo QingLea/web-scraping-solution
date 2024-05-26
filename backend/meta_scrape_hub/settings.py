@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-5227p%)gjz_kd4wvxgx=_xz==l_9t9t#owtms*=%0^iel#jc8w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() in ('true', '1', 't')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -58,8 +58,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8080", "http://127.0.0.1:3000",
-                        "http://127.0.0.1:8080"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8080", "http://127.0.0.1:3000", ] + os.getenv(
+    'DJANGO_CSRF_TRUSTED_ORIGINS',
+    'http://127.0.0.1:8080').split(',')
+
 ROOT_URLCONF = 'meta_scrape_hub.urls'
 
 TEMPLATES = [
