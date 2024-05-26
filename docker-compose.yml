@@ -5,8 +5,8 @@ services:
       POSTGRES_DB: meta_scrapping_solution
       POSTGRES_USER: meta_scrapping
       POSTGRES_PASSWORD: meta_scrapping
-    ports:
-      - "5432:5432"
+#    ports:
+#      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -14,8 +14,8 @@ services:
     build: ./backend
     volumes:
       - ./backend:/app
-    ports:
-      - "8000:8000"
+#    ports:
+#      - "8000:8000"
     depends_on:
       - meta_database
     environment:
@@ -33,13 +33,15 @@ services:
 
   frontend:
     build: ./frontend
-    command: npm start
     volumes:
       - ./frontend:/app
     ports:
       - "3000:3000"
     depends_on:
       - backend
+    environment:
+      - BACKEND_URL=http://backend:8000
+    command: pnpm start
 
 volumes:
   postgres_data:

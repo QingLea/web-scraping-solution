@@ -1,8 +1,10 @@
 FROM node:18-alpine
+RUN npm install -g pnpm
 WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm install --omit=dev
+COPY package.json ./
+RUN pnpm install --prod
 COPY . .
-RUN npm run build
-CMD [ "npm", "start" ]
+ENV BACKEND_URL=http://backend:8000
+RUN pnpm run build
+CMD [ "pnpm", "start" ]
 EXPOSE 3000

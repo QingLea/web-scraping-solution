@@ -174,7 +174,7 @@ LOGGING = {
         },
         'scraper': {
             'handlers': ['console', 'file'],
-            'level': 'DEBUG',
+            'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': True,
         }
     },
