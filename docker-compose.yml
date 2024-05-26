@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   meta_database:
     image: postgres:latest
@@ -13,9 +11,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: .
+    build: ./backend
     volumes:
-      - .:/app
+      - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
