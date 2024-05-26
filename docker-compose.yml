@@ -20,7 +20,7 @@ services:
       - meta_database
     environment:
       - DJANGO_ALLOWED_HOSTS=backend
-      - DJANGO_CSRF_TRUSTED_ORIGINS=backend
+      - DJANGO_CSRF_TRUSTED_ORIGINS=http://frontend:3000
       - DJANGO_DEBUG=False
       - DB_NAME=meta_scrapping_solution
       - DB_USER=meta_scrapping
