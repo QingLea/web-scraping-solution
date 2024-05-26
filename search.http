@@ -7,3 +7,6 @@ GET http://localhost:8000/api/product/?limit=20&offset=0
 
 ### GET dummy product
 GET http://localhost:8000/api/product/2000614400003
+
+### GET dummy category
+GET http://localhost:8000/api/categories/

@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from search.views import CategoryView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/user/", include("user_app.urls")),
     path("api/product/", include("search.urls")),
     path('api/scraper/', include('scraper.urls')),
+    path('api/categories/', CategoryView.as_view()),
 ]

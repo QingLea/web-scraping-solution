@@ -3,8 +3,21 @@ from rest_framework import status, permissions, authentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.models import Product
-from search.serializers import ProductReadSerializer
+from common.models import Product, Category
+from search.serializers import ProductReadSerializer, CategoryReadSerializer
+
+
+class CategoryView(APIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        """
+        Get a list of categories
+        """
+        categories = Category.objects.all()
+        serialized = CategoryReadSerializer(categories, many=True)
+        return Response(serialized.data)
 
 
 class ProductDetailView(APIView):

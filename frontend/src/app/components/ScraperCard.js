@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Card, Spinner} from 'react-bootstrap';
+import {Button, Card, Form, Spinner} from 'react-bootstrap';
 import ToastNotification from "@/app/components/ToastNotification";
 import {csrftoken} from "@/utils/csrfCookie";
 
@@ -22,6 +22,8 @@ const ScraperCard = () => {
         forceStop: false,
         reset: false
     });
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     const statusFailTimes = useRef(0);
 
@@ -71,14 +73,39 @@ const ScraperCard = () => {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('/api/categories/', {
+                    headers: {
+                        "Content-type": "application/json",
+                        "X-CSRFToken": csrftoken(),
+                    },
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail);
+                }
+                const categoriesData = await response.json();
+                setCategories(categoriesData);
+            } catch (error) {
+                showErrorToast("Error", `Error fetching categories: ${error.message}`);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
     const handleScrape = async () => {
         setLoading(prev => ({...prev, scrape: true}));
         try {
             const response = await fetch('/api/scraper/start/', {
-                method: 'POST', headers: {
+                method: 'POST',
+                headers: {
                     "Content-type": "application/json",
                     "X-CSRFToken": csrftoken(),
-                }
+                },
+                body: JSON.stringify({target_slug: selectedCategory || 'all'})
             });
             if (!response.ok) {
                 const errorData = await response.json();
@@ -98,7 +125,8 @@ const ScraperCard = () => {
         setLoading(prev => ({...prev, stop: true}));
         try {
             const response = await fetch('/api/scraper/stop/', {
-                method: 'POST', headers: {
+                method: 'POST',
+                headers: {
                     "Content-type": "application/json",
                     "X-CSRFToken": csrftoken(),
                 }
@@ -120,7 +148,8 @@ const ScraperCard = () => {
         setLoading(prev => ({...prev, forceStop: true}));
         try {
             const response = await fetch('/api/scraper/force_stop/', {
-                method: 'POST', headers: {
+                method: 'POST',
+                headers: {
                     "Content-type": "application/json",
                     "X-CSRFToken": csrftoken(),
                 }
@@ -142,7 +171,8 @@ const ScraperCard = () => {
         setLoading(prev => ({...prev, reset: true}));
         try {
             const response = await fetch('/api/scraper/reset/', {
-                method: 'POST', headers: {
+                method: 'POST',
+                headers: {
                     "Content-type": "application/json",
                     "X-CSRFToken": csrftoken(),
                 }
@@ -158,6 +188,11 @@ const ScraperCard = () => {
         } finally {
             setLoading(prev => ({...prev, reset: false}));
         }
+    };
+
+    const handleCategoryChange = async (e) => {
+        setSelectedCategory(e.target.value);
+        await handleReset();
     };
 
     const timeSinceLastUpdate = (timestamp) => {
@@ -187,8 +222,22 @@ const ScraperCard = () => {
                     Click the button to scrape data from the website.
                 </Card.Text>
                 <Card.Text>
+                    <strong>You can select a category to scrape data from and only scrape all data at the first
+                        time.</strong>
+                </Card.Text>
+                <Card.Text>
                     <small className="text-muted">Last updated {timeSinceLastUpdate(timestamp)}</small>
                 </Card.Text>
+                <Form.Group controlId="categorySelect" className="mb-3">
+                    <Form.Label>Select Category</Form.Label>
+                    <Form.Control as="select" value={selectedCategory} onChange={handleCategoryChange}
+                                  disabled={is_running}>
+                        <option key="all" value="all">All</option>
+                        {categories.map(category => (
+                            <option key={category.slug} value={category.slug}>{category.name}</option>
+                        ))}
+                    </Form.Control>
+                </Form.Group>
                 <div className="mt-3">
                     <Button variant="success" className="mx-1" disabled={is_running || loading.scrape}
                             onClick={handleScrape}>

@@ -10,7 +10,12 @@ class StartScrapingView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        message = controller.start_scraping()
+        target_slug = request.data['target_slug']
+        if target_slug:
+            controller.target_slug = target_slug if target_slug != 'all' else ""
+            message = controller.start_scraping()
+        else:
+            message = "Category not provided"
         return Response({"detail": message})
 
 

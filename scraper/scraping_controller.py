@@ -25,6 +25,7 @@ class ScrapingController:
         self.scraped_records = 0
         self.force_stop_flag = False
         self.timestamp = 0
+        self.target_slug = None
 
     def start_scraping(self):
         if self.is_running:
@@ -245,7 +246,10 @@ class ScrapingController:
                 logger.warning("Force stop flag detected, stopping scraping")
                 break
             try:
-                data = self.fetch_data(self.date, self.step_length, self.from_value)
+                if self.target_slug:
+                    data = self.fetch_data(self.date, self.step_length, self.from_value, self.target_slug)
+                else:
+                    data = self.fetch_data(self.date, self.step_length, self.from_value)
                 products = data['data']['store']['products']['items']
                 if not products:
                     self.is_running = False
