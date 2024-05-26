@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-5227p%)gjz_kd4wvxgx=_xz==l_9t9t#owtms*=%0^iel#jc8w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -90,8 +90,8 @@ DATABASES = {
         'NAME': 'meta_scrapping_solution',
         'USER': 'liqing',
         'PASSWORD': 'liqing',
-        'HOST': 'localhost',  # Use 'localhost' for local development
-        'PORT': '5432',  # Default port for PostgreSQL
+        'HOST': 'meta_database',
+        'PORT': '5432',
     }
 }
 

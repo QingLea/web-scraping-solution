@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  meta_database:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: meta_scrapping_solution
+      POSTGRES_USER: liqing
+      POSTGRES_PASSWORD: liqing
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - meta_database
+    environment:
+      - POSTGRES_DB=meta_scrapping_solution
+      - POSTGRES_USER=liqing
+      - POSTGRES_PASSWORD=liqing
+      - POSTGRES_HOST=meta_database
+      - POSTGRES_PORT=5432
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build: ./frontend
+    command: npm start
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
