@@ -286,7 +286,7 @@ const ProductWaterfall = ({apiEndpoint, limit}) => {
                     </Row>
                 </Col>
             </Row>
-            <ToastNotification title={toastTitle} message={toastMessage} show={showToast} onClose={() => {
+            <ToastNotification is_success={false} title={toastTitle} message={toastMessage} show={showToast} onClose={() => {
                 setShowToast(false);
             }}/>
         </Container>

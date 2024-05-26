@@ -106,7 +106,7 @@ function SignupPage() {
                     </Form.Group>
                 </Form>
             </Row>
-            <ToastNotification title={toastTitle} message={toastMessage} show={showToast} onClose={() => {
+            <ToastNotification title={toastTitle} is_success={false} message={toastMessage} show={showToast} onClose={() => {
                 setShowToast(false);
             }}/>
         </Container>
