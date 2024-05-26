@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Card, Spinner} from 'react-bootstrap';
 import ToastNotification from "@/app/components/ToastNotification";
+import {csrftoken} from "@/utils/csrfCookie";
 
 const ScraperCard = () => {
     const [data, setData] = useState({
@@ -45,7 +46,12 @@ const ScraperCard = () => {
     useEffect(() => {
         const fetchStatus = async () => {
             try {
-                const response = await fetch('/api/scraper/status/');
+                const response = await fetch('/api/scraper/status/', {
+                    headers: {
+                        "Content-type": "application/json",
+                        "X-CSRFToken": csrftoken(),
+                    },
+                });
                 if (!response.ok) {
                     const errorData = await response.json();
                     statusFailTimes.current += 1;
@@ -68,7 +74,12 @@ const ScraperCard = () => {
     const handleScrape = async () => {
         setLoading(prev => ({...prev, scrape: true}));
         try {
-            const response = await fetch('/api/scraper/start/', {method: 'POST'});
+            const response = await fetch('/api/scraper/start/', {
+                method: 'POST', headers: {
+                    "Content-type": "application/json",
+                    "X-CSRFToken": csrftoken(),
+                }
+            });
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail);
@@ -86,7 +97,12 @@ const ScraperCard = () => {
     const handleStop = async () => {
         setLoading(prev => ({...prev, stop: true}));
         try {
-            const response = await fetch('/api/scraper/stop/', {method: 'POST'});
+            const response = await fetch('/api/scraper/stop/', {
+                method: 'POST', headers: {
+                    "Content-type": "application/json",
+                    "X-CSRFToken": csrftoken(),
+                }
+            });
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail);
@@ -103,7 +119,12 @@ const ScraperCard = () => {
     const handleForceStop = async () => {
         setLoading(prev => ({...prev, forceStop: true}));
         try {
-            const response = await fetch('/api/scraper/force_stop/', {method: 'POST'});
+            const response = await fetch('/api/scraper/force_stop/', {
+                method: 'POST', headers: {
+                    "Content-type": "application/json",
+                    "X-CSRFToken": csrftoken(),
+                }
+            });
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail);
@@ -120,7 +141,12 @@ const ScraperCard = () => {
     const handleReset = async () => {
         setLoading(prev => ({...prev, reset: true}));
         try {
-            const response = await fetch('/api/scraper/reset/', {method: 'POST'});
+            const response = await fetch('/api/scraper/reset/', {
+                method: 'POST', headers: {
+                    "Content-type": "application/json",
+                    "X-CSRFToken": csrftoken(),
+                }
+            });
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail);
@@ -139,6 +165,9 @@ const ScraperCard = () => {
         const interval = seconds / 60;
 
         if (interval > 1) {
+            if (interval > 10000) {
+                return "Long time ago";
+            }
             return `${Math.floor(interval)} mins ago`;
         } else {
             return `${Math.floor(seconds)} secs ago`;
@@ -148,7 +177,7 @@ const ScraperCard = () => {
     const {is_running, from, scraped_records, timestamp} = data;
 
     return (
-        <Card border="dark" className="text-center">
+        <Card border="dark">
             <Card.Header>
                 <h4>Scraper</h4>
             </Card.Header>
