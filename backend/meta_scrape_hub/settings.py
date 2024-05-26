@@ -58,9 +58,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8080", "http://127.0.0.1:3000", ] + os.getenv(
-    'DJANGO_CSRF_TRUSTED_ORIGINS',
-    'http://127.0.0.1:8080').split(',')
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000",
+                        "http://localhost:8080",
+                        "http://127.0.0.1:3000",
+                        "http://127.0.0.1:8080",
+                        os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', 'http://127.0.0.1:8080')]  # harmless if not set
 
 ROOT_URLCONF = 'meta_scrape_hub.urls'
 
