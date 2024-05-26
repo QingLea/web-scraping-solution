@@ -61,6 +61,7 @@ class ScrapingController:
         ScrapingState.objects.all().delete()
         self.from_value = 0
         self.scraped_records = 0
+        self.timestamp = timezone.now()
         return "Scraping progress reset"
 
     @staticmethod
@@ -102,6 +103,16 @@ class ScrapingController:
             return None
 
     def get_status(self):
+        if self.is_running:
+            return {
+                "is_running": self.is_running,
+                "step_length": self.step_length,
+                "from": self.from_value,
+                "scraped_records": self.scraped_records,
+                "timestamp": self.timestamp,
+            }
+        else:
+            self._load_state()
         return {
             "is_running": self.is_running,
             "step_length": self.step_length,
@@ -111,7 +122,7 @@ class ScrapingController:
         }
 
     @staticmethod
-    def fetch_data(date, limit, from_value):
+    def fetch_data(date, limit, from_value, slug=""):
         base_url = 'https://cfapi.voikukka.fi/graphql'
 
         variables = {
@@ -127,7 +138,7 @@ class ScrapingController:
             "limit": limit,
             "queryString": "",
             "searchProvider": "loop54",
-            "slug": "",
+            "slug": slug,
             "sortForAvailabilityLabelDate": date,
             "storeId": "513971200",
             "useRandomId": True,
@@ -175,6 +186,7 @@ class ScrapingController:
         store_id = item['storeId']
         name = item['name']
         category = item['hierarchyPath'][-1]['name']
+        category_slug = item['hierarchyPath'][-1]['slug']
         sub_category = item['hierarchyPath'][-2]['name'] if len(item['hierarchyPath']) > 1 else None
         price = Decimal(item['price'])
         comparison_price = Decimal(item['comparisonPrice']) if item['comparisonPrice'] else None
@@ -187,6 +199,7 @@ class ScrapingController:
             "id": item_id,
             "name": name,
             "category": category,
+            "category_slug": category_slug,
             "sub_category": sub_category,
             "price": price,
             "comparison_price": comparison_price,
@@ -198,7 +211,8 @@ class ScrapingController:
     @staticmethod
     def save_product_to_db(product_info):
         store, created = Store.objects.get_or_create(id=product_info['store_id'])
-        category, created = Category.objects.get_or_create(name=product_info['category'])
+        category, created = Category.objects.get_or_create(name=product_info['category'],
+                                                           slug=product_info['category_slug'])
         sub_category = None
         if product_info.get('sub_category'):
             sub_category, created = SubCategory.objects.get_or_create(
@@ -243,6 +257,7 @@ class ScrapingController:
                     logger.debug(product_info)
                 self.scraped_records += self.step_length
                 self.from_value += self.step_length
+                self.timestamp = timezone.now()
                 self._save_state()
                 backoff_time = 1  # Reset backoff time after successful request
             except Exception as e:

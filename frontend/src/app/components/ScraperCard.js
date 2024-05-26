@@ -67,7 +67,7 @@ const ScraperCard = () => {
 
         fetchStatus();
 
-        const interval = setInterval(fetchStatus, 2000);
+        const interval = setInterval(fetchStatus, 5000);
         return () => clearInterval(interval);
     }, []);
 
@@ -166,7 +166,7 @@ const ScraperCard = () => {
 
         if (interval > 1) {
             if (interval > 10000) {
-                return "Long time ago";
+                return "long time ago";
             }
             return `${Math.floor(interval)} mins ago`;
         } else {
