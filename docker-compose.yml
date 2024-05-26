@@ -3,8 +3,8 @@ services:
     image: postgres:latest
     environment:
       POSTGRES_DB: meta_scrapping_solution
-      POSTGRES_USER: liqing
-      POSTGRES_PASSWORD: liqing
+      POSTGRES_USER: meta_scrapping
+      POSTGRES_PASSWORD: meta_scrapping
     ports:
       - "5432:5432"
     volumes:
@@ -19,11 +19,13 @@ services:
     depends_on:
       - meta_database
     environment:
-      - POSTGRES_DB=meta_scrapping_solution
-      - POSTGRES_USER=liqing
-      - POSTGRES_PASSWORD=liqing
-      - POSTGRES_HOST=meta_database
-      - POSTGRES_PORT=5432
+      - DJANGO_ALLOWED_HOSTS=backend
+      - DJANGO_DEBUG=False
+      - DB_NAME=meta_scrapping_solution
+      - DB_USER=meta_scrapping
+      - DB_PASSWORD=meta_scrapping
+      - DB_HOST=meta_database
+      - DB_PORT=5432
     command: >
       sh -c "python manage.py makemigrations &&
              python manage.py migrate &&

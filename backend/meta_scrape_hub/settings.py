@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,9 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-5227p%)gjz_kd4wvxgx=_xz==l_9t9t#owtms*=%0^iel#jc8w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', True),
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    os.getenv('DJANGO_ALLOWED_HOSTS'),
+]
 
 # Application definition
 
@@ -87,11 +93,11 @@ WSGI_APPLICATION = 'meta_scrape_hub.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'meta_scrapping_solution',
-        'USER': 'liqing',
-        'PASSWORD': 'liqing',
-        'HOST': 'meta_database',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME', 'meta_scrapping_solution'),
+        'USER': os.getenv('DB_USER', 'liqing'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'liqing'),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
