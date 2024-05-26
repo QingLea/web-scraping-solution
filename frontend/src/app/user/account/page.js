@@ -12,6 +12,7 @@ import {useRouter} from "next/navigation";
 export default function Account() {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [newRepeatPassword, setNewRepeatPassword] = useState('');
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastTitle, setToastTitle] = useState('');
@@ -23,6 +24,12 @@ export default function Account() {
 
     const handleUpdatePassword = async (e) => {
         e.preventDefault(); // Prevent the default form submit action
+        if (newPassword !== newRepeatPassword) {
+            setToastTitle("Error");
+            setToastMessage("New passwords do not match"); // Set the error message for the toast
+            setShowToast(true); // Show the toast
+            return;
+        }
         try {
             const response = await fetch('/api/user/account/', {
                 method: 'PUT',
@@ -43,8 +50,8 @@ export default function Account() {
             }
         } catch (error) {
             setToastTitle("Error");
-            setToastMessage(error.message); // Set the error message for the toast
-            setShowToast(true); // Show the toast
+            setToastMessage(error.message);
+            setShowToast(true);
         }
     };
 
@@ -81,6 +88,20 @@ export default function Account() {
                                 placeholder="New Password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)} // Update state on change
+                            />
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3 row" controlId="formHorizontalPassword">
+                        <Form.Label column sm={2}>
+                            Repeat New Password
+                        </Form.Label>
+                        <Col sm={10}>
+                            <Form.Control
+                                type="password"
+                                placeholder="Repeat New Password"
+                                value={newRepeatPassword}
+                                onChange={(e) => setNewRepeatPassword(e.target.value)} // Update state on change
                             />
                         </Col>
                     </Form.Group>
