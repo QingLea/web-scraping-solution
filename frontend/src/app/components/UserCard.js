@@ -4,7 +4,7 @@ import {useRouter} from 'next/navigation';
 import {csrftoken} from "@/utils/csrfCookie";
 
 const useUser = () => {
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const fetchUser = useCallback(async () => {

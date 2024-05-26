@@ -14,7 +14,7 @@ const ScraperCard = () => {
         show: false,
         message: '',
         title: '',
-        status: false
+        is_success: false
     });
     const [loading, setLoading] = useState({
         scrape: false,
@@ -32,7 +32,7 @@ const ScraperCard = () => {
             show: true,
             title,
             message,
-            status: false
+            is_success: false
         });
     };
 
@@ -41,7 +41,7 @@ const ScraperCard = () => {
             show: true,
             title,
             message,
-            status: true
+            is_success: true
         });
     };
 
@@ -195,8 +195,17 @@ const ScraperCard = () => {
         await handleReset();
     };
 
+
     const timeSinceLastUpdate = (timestamp) => {
-        const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
+        const now = new Date().getTime();
+        const past = new Date(timestamp).getTime();
+
+        // Ensure past is a valid date
+        if (isNaN(past)) {
+            throw new Error("Invalid timestamp");
+        }
+
+        const seconds = Math.floor((now - past) / 1000);
         const interval = seconds / 60;
 
         if (interval > 1) {
@@ -208,6 +217,7 @@ const ScraperCard = () => {
             return `${Math.floor(seconds)} secs ago`;
         }
     };
+
 
     const {is_running, from, scraped_records, timestamp} = data;
 
@@ -300,7 +310,7 @@ const ScraperCard = () => {
                 </div>
             </Card.Body>
             <ToastNotification
-                status={toast.status}
+                is_success={toast.is_success}
                 title={toast.title}
                 message={toast.message}
                 show={toast.show}

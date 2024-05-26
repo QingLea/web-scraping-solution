@@ -1,28 +1,22 @@
 {
-  "name": "my-app1",
+  "name": "web-scraping-solution-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "PORT=8080 next dev",
     "build": "next build",
-    "start": "next start -p 8080",
+    "start": "next start -p 3000",
     "lint": "next lint"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0",
     "bootstrap": "^5.3.3",
-    "lodash.debounce": "^4.0.8",
-    "next": "14.0.1",
+    "next": "^14.2.3",
     "react": "^18",
     "react-bootstrap": "^2.10.1",
     "react-dom": "^18",
-    "react-helmet": "^6.1.0",
-    "typescript": "^5.2.2"
+    "react-helmet": "^6.1.0"
   },
   "devDependencies": {
-    "@types/node": "20.9.0",
-    "@types/react": "18.2.37",
     "eslint": "^8",
     "eslint-config-next": "14.0.1",
     "eslint-config-prettier": "^9.0.0"

@@ -56,11 +56,11 @@ class ProductsView(APIView):
         if 'name' in query_params and query_params['name']:
             filters &= Q(name__icontains=query_params['name'])
         if 'category' in query_params and query_params['category']:
-            filters &= Q(category__icontains=query_params['category'])
+            filters &= Q(category__name__icontains=query_params['category'])
         if 'sub_category' in query_params and query_params['sub_category']:
-            filters &= Q(sub_category__icontains=query_params['sub_category'])
+            filters &= Q(sub_category__name__icontains=query_params['sub_category'])
         if 'store_id' in query_params and query_params['store_id']:
-            filters &= Q(store__store_id=query_params['store_id'])
+            filters &= Q(store__id=query_params['store_id'])
         if 'min_price' in query_params and query_params['min_price']:
             try:
                 min_price = float(query_params['min_price'])
@@ -76,13 +76,13 @@ class ProductsView(APIView):
         if 'min_comparison_price' in query_params and query_params['min_comparison_price']:
             try:
                 min_comparison_price = float(query_params['min_comparison_price'])
-                filters &= Q(comprsion_price__gte=min_comparison_price)
+                filters &= Q(comparison_price__gte=min_comparison_price)
             except ValueError:
                 return Response({"error": "Invalid min_comparison_price parameter"}, status=status.HTTP_400_BAD_REQUEST)
         if 'max_comparison_price' in query_params and query_params['max_comparison_price']:
             try:
                 max_comparison_price = float(query_params['max_comparison_price'])
-                filters &= Q(comprsion_price__lte=max_comparison_price)
+                filters &= Q(comparison_price__lte=max_comparison_price)
             except ValueError:
                 return Response({"error": "Invalid max_comparison_price parameter"}, status=status.HTTP_400_BAD_REQUEST)
 

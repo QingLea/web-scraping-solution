@@ -1,0 +1,47 @@
+services:
+  meta_database:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: meta_scrapping_solution
+      POSTGRES_USER: meta_scrapping
+      POSTGRES_PASSWORD: meta_scrapping
+#    ports:
+#      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/app
+#    ports:
+#      - "8000:8000"
+    depends_on:
+      - meta_database
+    environment:
+      - DJANGO_ALLOWED_HOSTS=backend
+      - DJANGO_DEBUG=False
+      - DB_NAME=meta_scrapping_solution
+      - DB_USER=meta_scrapping
+      - DB_PASSWORD=meta_scrapping
+      - DB_HOST=meta_database
+      - DB_PORT=5432
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - BACKEND_URL=http://backend:8000
+    command: pnpm start
+
+volumes:
+  postgres_data:

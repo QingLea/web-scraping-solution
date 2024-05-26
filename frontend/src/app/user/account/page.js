@@ -115,7 +115,7 @@ export default function Account() {
                     </Form.Group>
                 </Form>
             </Row>
-            <ToastNotification title={toastTitle} show={showToast} message={toastMessage}
+            <ToastNotification title={toastTitle} show={showToast} message={toastMessage} is_success={false}
                                onClose={() => setShowToast(false)}/>
         </Container>
     );
