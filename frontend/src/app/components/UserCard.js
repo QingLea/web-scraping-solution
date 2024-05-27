@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
 import React, {useCallback, useEffect, useState} from 'react';
 import {Button, ButtonGroup, Card, Spinner} from 'react-bootstrap';
 import {useRouter} from 'next/navigation';
@@ -10,7 +11,7 @@ const useUser = () => {
     const fetchUser = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await fetch("/api/user/profile/", {
+            const res = await fetch("/api/user/profile", {
                 headers: {"Content-type": "application/json"},
             });
             const data = await res.json();
@@ -47,7 +48,7 @@ const UserCard = () => {
 
     const logout = async () => {
         try {
-            await fetch('/api/user/login/', {
+            await fetch('/api/user/login', {
                 method: "DELETE",
                 headers: {
                     "Content-type": "application/json",

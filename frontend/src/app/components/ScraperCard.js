@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Card, Form, Spinner} from 'react-bootstrap';
 import ToastNotification from "@/app/components/ToastNotification";
@@ -48,7 +49,7 @@ const ScraperCard = () => {
     useEffect(() => {
         const fetchStatus = async () => {
             try {
-                const response = await fetch('/api/scraper/status/', {
+                const response = await fetch('/api/scraper/status', {
                     headers: {
                         "Content-type": "application/json",
                         "X-CSRFToken": csrftoken(),
@@ -76,7 +77,7 @@ const ScraperCard = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch('/api/categories/', {
+                const response = await fetch('/api/categories', {
                     headers: {
                         "Content-type": "application/json",
                         "X-CSRFToken": csrftoken(),
@@ -99,7 +100,7 @@ const ScraperCard = () => {
     const handleScrape = async () => {
         setLoading(prev => ({...prev, scrape: true}));
         try {
-            const response = await fetch('/api/scraper/start/', {
+            const response = await fetch('/api/scraper/start', {
                 method: 'POST',
                 headers: {
                     "Content-type": "application/json",
@@ -124,7 +125,7 @@ const ScraperCard = () => {
     const handleStop = async () => {
         setLoading(prev => ({...prev, stop: true}));
         try {
-            const response = await fetch('/api/scraper/stop/', {
+            const response = await fetch('/api/scraper/stop', {
                 method: 'POST',
                 headers: {
                     "Content-type": "application/json",
@@ -147,7 +148,7 @@ const ScraperCard = () => {
     const handleForceStop = async () => {
         setLoading(prev => ({...prev, forceStop: true}));
         try {
-            const response = await fetch('/api/scraper/force_stop/', {
+            const response = await fetch('/api/scraper/force_stop', {
                 method: 'POST',
                 headers: {
                     "Content-type": "application/json",
@@ -170,7 +171,7 @@ const ScraperCard = () => {
     const handleReset = async () => {
         setLoading(prev => ({...prev, reset: true}));
         try {
-            const response = await fetch('/api/scraper/reset/', {
+            const response = await fetch('/api/scraper/reset', {
                 method: 'POST',
                 headers: {
                     "Content-type": "application/json",
