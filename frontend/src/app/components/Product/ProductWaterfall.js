@@ -1,4 +1,5 @@
 "use client";
+import 'bootstrap/dist/css/bootstrap.min.css'
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import ProductCard from "@/app/components/Product/ProductCard";

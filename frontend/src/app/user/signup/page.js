@@ -22,7 +22,7 @@ function SignupPage() {
     const handleSignup = async (e) => {
             e.preventDefault(); // Prevent the default form submit action
             try {
-                const response = await fetch('/api/user/signup/', {
+                const response = await fetch('/api/user/signup', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

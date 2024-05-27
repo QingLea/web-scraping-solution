@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
 import {Card, CardText, Col, Container, Row} from "react-bootstrap";
 import React from "react";
 

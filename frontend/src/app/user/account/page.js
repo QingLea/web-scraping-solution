@@ -1,6 +1,6 @@
 "use client";
-import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import React, {useState} from 'react';
 import {Button, Col, Container, Form, Row} from 'react-bootstrap';
 import {csrftoken} from "@/utils/csrfCookie";
 import ToastNotification from "@/app/components/ToastNotification";
@@ -31,7 +31,7 @@ export default function Account() {
             return;
         }
         try {
-            const response = await fetch('/api/user/account/', {
+            const response = await fetch('/api/user/account', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
