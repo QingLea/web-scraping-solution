@@ -13,12 +13,11 @@
     "next": "^14.2.3",
     "react": "^18",
     "react-bootstrap": "^2.10.1",
-    "react-dom": "^18",
-    "react-helmet": "^6.1.0"
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "eslint": "^8",
-    "eslint-config-next": "14.0.1",
-    "eslint-config-prettier": "^9.0.0"
+    "eslint": "^9.4.0",
+    "eslint-config-next": "^14.2.3",
+    "eslint-config-prettier": "^9.1.0"
   }
 }
