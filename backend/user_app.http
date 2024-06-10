@@ -2,9 +2,10 @@
 
 POST http://localhost:8000/api/user/signup/
 Content-Type: application/json
+X-CSRFToken: dKY6O5Nb7lsCPBb48idofKHyxJbzgX16
 
 {
-  "username": "test1",
+  "username": "test21",
   "email": "test1@test.tt",
   "password": "test"
 }
@@ -13,15 +14,15 @@ Content-Type: application/json
 ###login
 POST http://localhost:8000/api/user/login/
 Content-Type: application/json
-X-CSRFToken: gFCdD5yW0Yq0RSQJWXFjChdAZkEcK7Vy
+X-CSRFToken: qUHhex47wuEKsKfgwOsetOQu6fGDXLKB
 
 {
   "username": "liqing",
-  "password": "liqing"
+  "password": "liqingliqing"
 }
 ### logout
 DELETE http://localhost:8000/api/user/login/
-X-CSRFToken: gFCdD5yW0Yq0RSQJWXFjChdAZkEcK7Vy
+X-CSRFToken: qUHhex47wuEKsKfgwOsetOQu6fGDXLKB
 
 
 ### status
@@ -32,7 +33,7 @@ GET http://localhost:8000/api/user/profile/
 ### update user
 PUT http://localhost:8000/api/user/account/
 Content-Type: application/json
-X-CSRFToken: gFCdD5yW0Yq0RSQJWXFjChdAZkEcK7Vy
+X-CSRFToken: oJHHV4d5mVPY996tpITHQvY62jaN0T8Y
 
 {
   "oldPassword": "liqing",
