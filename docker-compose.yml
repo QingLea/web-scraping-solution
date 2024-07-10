@@ -5,8 +5,8 @@ services:
       POSTGRES_DB: meta_scrapping_solution
       POSTGRES_USER: meta_scrapping
       POSTGRES_PASSWORD: meta_scrapping
-#    ports:
-#      - "5432:5432"
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -14,14 +14,14 @@ services:
     build: ./backend
     volumes:
       - ./backend:/app
-#    ports:
-#      - "8000:8000"
+    ports:
+      - "8000:8000"
     depends_on:
       - meta_database
     environment:
       - DJANGO_ALLOWED_HOSTS=backend
       - DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
-      - DJANGO_DEBUG=False
+      - DJANGO_DEBUG=True
       - DB_NAME=meta_scrapping_solution
       - DB_USER=meta_scrapping
       - DB_PASSWORD=meta_scrapping
